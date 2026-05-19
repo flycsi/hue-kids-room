@@ -15,8 +15,6 @@ I2cMasterBus::I2cMasterBus(int scl_pin, int sda_pin, int i2c_port) {
     ESP_ERROR_CHECK(i2c_new_master_bus(&cfg, &user_i2c_handle));
 }
 
-I2cMasterBus::~I2cMasterBus() {}
-
 int I2cMasterBus::i2c_write_buff(i2c_master_dev_handle_t dev_handle, int reg, uint8_t *buf, uint8_t len) {
     i2c_master_bus_wait_all_done(user_i2c_handle, I2C_DONE_TICKS);
     if (reg == -1) {
