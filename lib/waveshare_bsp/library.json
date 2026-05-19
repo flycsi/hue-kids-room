@@ -1,0 +1,9 @@
+{
+  "name": "waveshare_bsp",
+  "version": "1.0.0",
+  "description": "Waveshare ESP32-C6-Touch-AMOLED-2.16 BSP (SH8601 display + touch + AXP2101)",
+  "build": {
+    "srcDirs": [".", "src/externLib", "src/port_bsp"],
+    "includeDir": "."
+  }
+}
