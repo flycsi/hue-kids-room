@@ -162,7 +162,7 @@
 #define LV_USE_CANVAS       0
 #define LV_USE_CHART        0
 #define LV_USE_CHECKBOX     0
-#define LV_USE_COLORWHEEL   1
+#define LV_USE_COLORWHEEL   0   /* removed in LVGL v9 */
 #define LV_USE_DROPDOWN     0
 #define LV_USE_IMG          1
 #define LV_USE_IMAGEBUTTON  0

@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include "bsp_lvgl_port.h"
+#include "user_config.h"
 #include "i2c_bsp.h"
 #include "axp2101_bsp.h"
 #include "config.h"

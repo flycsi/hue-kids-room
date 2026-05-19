@@ -17,7 +17,7 @@ public:
 private:
     AppUI     *ui_;
     lv_obj_t  *screen_     = nullptr;
-    lv_obj_t  *colorWheel_ = nullptr;
+    lv_obj_t  *hueSlider_  = nullptr;
     lv_obj_t  *briSlider_  = nullptr;
 
     void build();
