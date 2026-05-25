@@ -24,6 +24,7 @@ void HomeScreen::styleBtn(lv_obj_t *btn, lv_color_t color) {
 
 void HomeScreen::build() {
     screen_ = lv_obj_create(nullptr);
+    lv_obj_remove_flag(screen_, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_style_bg_color(screen_, CLR_BG, 0);
     lv_obj_set_style_bg_opa(screen_, LV_OPA_COVER, 0);
 
@@ -66,7 +67,7 @@ void HomeScreen::build() {
     const lv_coord_t GAP   = (W - 3 * BTN_W) / 4;
 
     // Night button
-    nightBtn_ = lv_btn_create(screen_);
+    nightBtn_ = lv_button_create(screen_);
     lv_obj_set_size(nightBtn_, BTN_W, BTN_H);
     lv_obj_set_pos(nightBtn_, GAP, BTN_Y);
     styleBtn(nightBtn_, CLR_NIGHT);
@@ -85,7 +86,7 @@ void HomeScreen::build() {
     }
 
     // Party button
-    partyBtn_ = lv_btn_create(screen_);
+    partyBtn_ = lv_button_create(screen_);
     lv_obj_set_size(partyBtn_, BTN_W, BTN_H);
     lv_obj_set_pos(partyBtn_, GAP * 2 + BTN_W, BTN_Y);
     styleBtn(partyBtn_, CLR_PARTY);
@@ -104,7 +105,7 @@ void HomeScreen::build() {
     }
 
     // Power button
-    powerBtn_ = lv_btn_create(screen_);
+    powerBtn_ = lv_button_create(screen_);
     lv_obj_set_size(powerBtn_, BTN_W, BTN_H);
     lv_obj_set_pos(powerBtn_, GAP * 3 + BTN_W * 2, BTN_Y);
     styleBtn(powerBtn_, CLR_POWER);

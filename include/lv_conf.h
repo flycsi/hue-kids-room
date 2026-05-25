@@ -156,7 +156,8 @@
 #define LV_USE_ANIMIMG      0
 #define LV_USE_ARC          1
 #define LV_USE_BAR          1
-#define LV_USE_BTN          1
+#define LV_USE_BTN          1   /* compat alias */
+#define LV_USE_BUTTON       1
 #define LV_USE_BTNMATRIX    0
 #define LV_USE_CALENDAR     0
 #define LV_USE_CANVAS       0

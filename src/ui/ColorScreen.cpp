@@ -9,6 +9,7 @@ ColorScreen::ColorScreen(AppUI *ui) : ui_(ui) {
 
 void ColorScreen::build() {
     screen_ = lv_obj_create(nullptr);
+    lv_obj_remove_flag(screen_, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_style_bg_color(screen_, CLR_BG, 0);
     lv_obj_set_style_bg_opa(screen_, LV_OPA_COVER, 0);
 
