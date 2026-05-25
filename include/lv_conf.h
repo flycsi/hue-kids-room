@@ -24,11 +24,12 @@
 /*=========================
    MEMORY SETTINGS
  *=========================*/
-#define LV_MEM_SIZE          (64 * 1024U)
-#define LV_MEM_POOL_INCLUDE  <stdlib.h>
-#define LV_MEM_POOL_ALLOC    malloc
-#define LV_MEM_POOL_FREE     free
-#define LV_MEM_CUSTOM        0
+/* Use system malloc — the shadow buffer for lv_obj circles can exceed 64KB */
+#define LV_MEM_CUSTOM         1
+#define LV_MEM_CUSTOM_INCLUDE <stdlib.h>
+#define LV_MEM_CUSTOM_ALLOC   malloc
+#define LV_MEM_CUSTOM_FREE    free
+#define LV_MEM_CUSTOM_REALLOC realloc
 
 /*====================
    HAL SETTINGS

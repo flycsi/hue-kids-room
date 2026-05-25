@@ -26,6 +26,7 @@ void HueClient::sendState(int lightId, const char *jsonBody) {
     if (WiFi.status() != WL_CONNECTED) return;
 
     HTTPClient http;
+    http.setTimeout(2000);
     String url = String("http://") + bridgeIp_ + "/api/" + username_
                  + "/lights/" + lightId + "/state";
     http.begin(url);
