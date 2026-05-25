@@ -17,19 +17,12 @@
 /*=========================
    STDLIB WRAPPER SETTINGS
  *=========================*/
-#define LV_USE_STDLIB_MALLOC    LV_STDLIB_BUILTIN
-#define LV_USE_STDLIB_STRING    LV_STDLIB_BUILTIN
-#define LV_USE_STDLIB_SPRINTF   LV_STDLIB_BUILTIN
-
-/*=========================
-   MEMORY SETTINGS
- *=========================*/
-/* Use system malloc — the shadow buffer for lv_obj circles can exceed 64KB */
-#define LV_MEM_CUSTOM         1
-#define LV_MEM_CUSTOM_INCLUDE <stdlib.h>
-#define LV_MEM_CUSTOM_ALLOC   malloc
-#define LV_MEM_CUSTOM_FREE    free
-#define LV_MEM_CUSTOM_REALLOC realloc
+/* LV_STDLIB_CLIB uses malloc/free/realloc from libc — no fixed pool limit.
+   Required because the circle shadow buffer can reach 57 KB which overflows
+   the builtin 64 KB pool once object metadata is added. */
+#define LV_USE_STDLIB_MALLOC    LV_STDLIB_CLIB
+#define LV_USE_STDLIB_STRING    LV_STDLIB_CLIB
+#define LV_USE_STDLIB_SPRINTF   LV_STDLIB_CLIB
 
 /*====================
    HAL SETTINGS

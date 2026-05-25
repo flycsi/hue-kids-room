@@ -58,9 +58,24 @@ void setup() {
         "wifi_connect", 4096, nullptr, 1, nullptr);
 }
 
+#define SCREEN_TIMEOUT_MS 30000
+
 void loop() {
-    // Drive party-mode color cycling (HTTP calls, no LVGL needed)
     if (hueClient) hueClient->tick();
+
+    // Screen timeout: backlight off after 30 s of inactivity, on again on touch
+    static bool screenOff = false;
+    if (bsp_lvgl_lock(5)) {
+        uint32_t idle = lv_display_get_inactive_time(lv_display_get_default());
+        bsp_lvgl_unlock();
+        if (idle >= SCREEN_TIMEOUT_MS && !screenOff) {
+            Lcd_SetBacklight(0);
+            screenOff = true;
+        } else if (idle < SCREEN_TIMEOUT_MS && screenOff) {
+            Lcd_SetBacklight(100);
+            screenOff = false;
+        }
+    }
 
     vTaskDelay(pdMS_TO_TICKS(50));
 }
