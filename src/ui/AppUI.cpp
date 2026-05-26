@@ -34,6 +34,19 @@ void AppUI::onStatusUpdate(lv_timer_t *t) {
         Axp2101_GetBatteryPercent(),
         Axp2101_IsCharging()
     );
+
+    // Countdown during sleep mode
+    if (self->hue_->isSleepMode()) {
+        uint32_t remaining = self->hue_->sleepRemainingMs();
+        uint32_t mins = (remaining + 59999) / 60000;  // round up
+        char buf[24];
+        if (mins > 0) {
+            snprintf(buf, sizeof(buf), "Dodo dans %lu min", mins);
+        } else {
+            snprintf(buf, sizeof(buf), "Bonne nuit !");
+        }
+        self->homeScreen_->setStatus(buf);
+    }
 }
 
 void AppUI::showColorScreen() {
@@ -77,6 +90,19 @@ void AppUI::onPowerToggle() {
     hue_->toggleLights();
     homeScreen_->updateColorPreview(hue_->currentColor(), hue_->getMode());
     homeScreen_->setStatus(hue_->isLightsOn() ? "Allume" : "Eteint");
+}
+
+void AppUI::onSleepMode() {
+    if (hue_->isSleepMode()) {
+        // Cancel sleep — restore normal state without sending HTTP
+        hue_->applyColor(hue_->currentColor());
+        homeScreen_->updateColorPreview(hue_->currentColor(), AppMode::Normal);
+        homeScreen_->setStatus("Dodo annule");
+    } else {
+        hue_->setSleepMode();
+        homeScreen_->updateColorPreview(hue_->currentColor(), AppMode::Sleep);
+        homeScreen_->setStatus("Dodo dans 15 min");
+    }
 }
 
 void AppUI::setStatus(const char *msg) {

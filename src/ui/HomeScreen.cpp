@@ -5,6 +5,7 @@
 #define CLR_NIGHT   lv_color_hex(0xF5A623)  // amber warm
 #define CLR_PARTY   lv_color_hex(0xE040FB)  // purple
 #define CLR_POWER   lv_color_hex(0x4CAF50)  // green
+#define CLR_SLEEP   lv_color_hex(0x283593)  // deep indigo
 #define CLR_BG      lv_color_hex(0x0D1B2A)  // dark navy
 #define CLR_CIRCLE  lv_color_hex(0x5B9BD5)  // default blue
 
@@ -77,10 +78,10 @@ void HomeScreen::build() {
     lv_obj_set_style_text_opa(circleHint, LV_OPA_70, 0);
     lv_obj_align(circleHint, LV_ALIGN_BOTTOM_MID, 0, -12);
 
-    // ── 3 Mode buttons ────────────────────────────────────────────────────────
-    const lv_coord_t BTN_W = 130, BTN_H = 90;
+    // ── 4 Mode buttons ────────────────────────────────────────────────────────
+    const lv_coord_t BTN_W = 100, BTN_H = 90;
     const lv_coord_t BTN_Y = H - BTN_H - 30;
-    const lv_coord_t GAP   = (W - 3 * BTN_W) / 4;
+    const lv_coord_t GAP   = (W - 4 * BTN_W) / 5;
 
     // Night button
     nightBtn_ = lv_button_create(screen_);
@@ -139,6 +140,25 @@ void HomeScreen::build() {
         lv_obj_align(ico, LV_ALIGN_TOP_MID, 0, 8);
     }
 
+    // Sleep button
+    sleepBtn_ = lv_button_create(screen_);
+    lv_obj_set_size(sleepBtn_, BTN_W, BTN_H);
+    lv_obj_set_pos(sleepBtn_, GAP * 4 + BTN_W * 3, BTN_Y);
+    styleBtn(sleepBtn_, CLR_SLEEP);
+    lv_obj_add_event_cb(sleepBtn_, onSleepBtn, LV_EVENT_CLICKED, this);
+    {
+        lv_obj_t *lbl = lv_label_create(sleepBtn_);
+        lv_label_set_text(lbl, "Dodo");
+        lv_obj_set_style_text_font(lbl, &lv_font_montserrat_24, 0);
+        lv_obj_set_style_text_color(lbl, lv_color_white(), 0);
+        lv_obj_align(lbl, LV_ALIGN_BOTTOM_MID, 0, -8);
+        lv_obj_t *ico = lv_label_create(sleepBtn_);
+        lv_label_set_text(ico, LV_SYMBOL_EYE_CLOSE);
+        lv_obj_set_style_text_font(ico, &lv_font_montserrat_24, 0);
+        lv_obj_set_style_text_color(ico, lv_color_white(), 0);
+        lv_obj_align(ico, LV_ALIGN_TOP_MID, 0, 8);
+    }
+
     // ── Status label (bottom) ─────────────────────────────────────────────────
     statusLabel_ = lv_label_create(screen_);
     lv_label_set_text(statusLabel_, "Connexion...");
@@ -155,6 +175,8 @@ void HomeScreen::updateColorPreview(HueColor color, AppMode mode) {
         c = lv_color_make(50, 50, 50);
     } else if (mode == AppMode::Night) {
         c = lv_color_make(255, 160, 60);
+    } else if (mode == AppMode::Sleep) {
+        c = lv_color_make(255, 140, 20);
     } else if (mode == AppMode::Party) {
         // Animate: rotate hue around the circle
         static uint8_t animStep = 0;
@@ -211,4 +233,8 @@ void HomeScreen::onPartyBtn(lv_event_t *e) {
 void HomeScreen::onPowerBtn(lv_event_t *e) {
     auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
     self->ui_->onPowerToggle();
+}
+void HomeScreen::onSleepBtn(lv_event_t *e) {
+    auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
+    self->ui_->onSleepMode();
 }

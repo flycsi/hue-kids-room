@@ -30,6 +30,7 @@ private:
     lv_obj_t  *nightBtn_   = nullptr;
     lv_obj_t  *partyBtn_   = nullptr;
     lv_obj_t  *powerBtn_   = nullptr;
+    lv_obj_t  *sleepBtn_   = nullptr;
 
     void build();
     void styleBtn(lv_obj_t *btn, lv_color_t color);
@@ -38,4 +39,5 @@ private:
     static void onNightBtn(lv_event_t *e);
     static void onPartyBtn(lv_event_t *e);
     static void onPowerBtn(lv_event_t *e);
+    static void onSleepBtn(lv_event_t *e);
 };

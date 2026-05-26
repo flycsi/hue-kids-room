@@ -108,13 +108,50 @@ void HueClient::setPartyMode(bool enable) {
     }
 }
 
-void HueClient::tick() {
-    if (!partyActive_) return;
+void HueClient::setSleepMode() {
+    mode_            = AppMode::Sleep;
+    partyActive_     = false;
+    lightsOn_        = true;
+    sleepStartMs_    = millis();
+    lastSleepStepMs_ = sleepStartMs_;
+    // Warm orange-yellow to ease into sleep
+    color_ = { 8000, 220, SLEEP_START_BRI, true };
+    broadcastColor(color_);
+}
 
+uint32_t HueClient::sleepRemainingMs() const {
+    if (mode_ != AppMode::Sleep) return 0;
+    uint32_t elapsed = millis() - sleepStartMs_;
+    return elapsed >= SLEEP_DURATION_MS ? 0 : SLEEP_DURATION_MS - elapsed;
+}
+
+void HueClient::tick() {
     uint32_t now = millis();
-    if (now - lastPartyMs_ >= HUE_PARTY_INTERVAL_MS) {
-        lastPartyMs_ = now;
-        broadcastColor(PARTY_COLORS[partyStep_]);
-        partyStep_ = (partyStep_ + 1) % PARTY_STEPS;
+
+    if (partyActive_) {
+        if (now - lastPartyMs_ >= HUE_PARTY_INTERVAL_MS) {
+            lastPartyMs_ = now;
+            broadcastColor(PARTY_COLORS[partyStep_]);
+            partyStep_ = (partyStep_ + 1) % PARTY_STEPS;
+        }
+    }
+
+    if (mode_ == AppMode::Sleep) {
+        uint32_t elapsed = now - sleepStartMs_;
+
+        if (elapsed >= SLEEP_DURATION_MS) {
+            // Finished: lock at minimum brightness
+            color_.bri = SLEEP_END_BRI;
+            broadcastColor(color_);
+            mode_ = AppMode::Normal;
+        } else if (now - lastSleepStepMs_ >= 30000) {
+            // Dim one step every 30 s
+            lastSleepStepMs_ = now;
+            float progress = (float)elapsed / SLEEP_DURATION_MS;
+            uint8_t bri = SLEEP_START_BRI
+                        - (uint8_t)(progress * (SLEEP_START_BRI - SLEEP_END_BRI));
+            color_.bri = max(bri, SLEEP_END_BRI);
+            broadcastColor(color_);
+        }
     }
 }

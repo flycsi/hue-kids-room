@@ -26,6 +26,7 @@ public:
     void onNightMode();
     void onPartyMode();
     void onPowerToggle();
+    void onSleepMode();
 
     HueClient *hue() { return hue_; }
 
