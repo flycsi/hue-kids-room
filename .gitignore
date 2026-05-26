@@ -6,3 +6,6 @@
 
 # Secrets — copier config.h.example → config.h et remplir
 include/config.h
+
+# Claude context file (personal, not for the repo)
+CLAUDE.md
