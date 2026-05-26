@@ -7,3 +7,6 @@ void Custom_PmicRegisterInit(void);
 
 void Axp2101_SetAldo2(uint8_t enable);
 void Axp2101_SetAldo3(uint8_t enable);
+
+int  Axp2101_GetBatteryPercent();
+bool Axp2101_IsCharging();

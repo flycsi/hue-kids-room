@@ -29,18 +29,34 @@ void HomeScreen::build() {
     lv_obj_set_style_bg_opa(screen_, LV_OPA_COVER, 0);
 
     const lv_coord_t W = 480, H = 480;
+    // Header occupies y=0..47 ; buttons start at BTN_Y=360
+    // Circle is centered in the remaining space: top = 47 + (313-200)/2 = 103
+    const lv_coord_t HDR_Y  = 12;   // vertical offset for header items
+    const lv_coord_t CIRC_Y = 103;  // circle top offset from screen top
 
-    // ── Title ──────────────────────────────────────────────────────────────────
+    // ── Header: time | title | battery ────────────────────────────────────────
+    timeLabel_ = lv_label_create(screen_);
+    lv_label_set_text(timeLabel_, "--:--");
+    lv_obj_set_style_text_font(timeLabel_, &lv_font_montserrat_24, 0);
+    lv_obj_set_style_text_color(timeLabel_, lv_color_white(), 0);
+    lv_obj_align(timeLabel_, LV_ALIGN_TOP_LEFT, 16, HDR_Y);
+
     lv_obj_t *title = lv_label_create(screen_);
     lv_label_set_text(title, "Ma Chambre");
     lv_obj_set_style_text_font(title, &lv_font_montserrat_24, 0);
     lv_obj_set_style_text_color(title, lv_color_white(), 0);
-    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 16);
+    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, HDR_Y);
+
+    battLabel_ = lv_label_create(screen_);
+    lv_label_set_text(battLabel_, "--%");
+    lv_obj_set_style_text_font(battLabel_, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_color(battLabel_, lv_color_make(180, 180, 180), 0);
+    lv_obj_align(battLabel_, LV_ALIGN_TOP_RIGHT, -16, HDR_Y + 5);
 
     // ── Big color circle (tap → color screen) ─────────────────────────────────
     colorCircle_ = lv_obj_create(screen_);
     lv_obj_set_size(colorCircle_, 200, 200);
-    lv_obj_align(colorCircle_, LV_ALIGN_TOP_MID, 0, 60);
+    lv_obj_align(colorCircle_, LV_ALIGN_TOP_MID, 0, CIRC_Y);
     lv_obj_set_style_radius(colorCircle_, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_bg_color(colorCircle_, CLR_CIRCLE, 0);
     lv_obj_set_style_bg_opa(colorCircle_, LV_OPA_COVER, 0);
@@ -157,6 +173,26 @@ void HomeScreen::updateColorPreview(HueColor color, AppMode mode) {
 
 void HomeScreen::setStatus(const char *msg) {
     if (statusLabel_) lv_label_set_text(statusLabel_, msg);
+}
+
+void HomeScreen::updateTime(int hour, int minute) {
+    if (!timeLabel_) return;
+    char buf[6];
+    snprintf(buf, sizeof(buf), "%02d:%02d", hour, minute);
+    lv_label_set_text(timeLabel_, buf);
+}
+
+void HomeScreen::updateBattery(int pct, bool charging) {
+    if (!battLabel_) return;
+    const char *icon = charging          ? LV_SYMBOL_CHARGE :
+                       pct > 75          ? LV_SYMBOL_BATTERY_FULL :
+                       pct > 50          ? LV_SYMBOL_BATTERY_3 :
+                       pct > 25          ? LV_SYMBOL_BATTERY_2 :
+                       pct > 10          ? LV_SYMBOL_BATTERY_1 :
+                                           LV_SYMBOL_BATTERY_EMPTY;
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%s %d%%", icon, pct);
+    lv_label_set_text(battLabel_, buf);
 }
 
 // ─── Event callbacks ────────────────────────────────────────────────────────

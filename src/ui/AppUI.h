@@ -33,4 +33,7 @@ private:
     HueClient   *hue_;
     HomeScreen  *homeScreen_  = nullptr;
     ColorScreen *colorScreen_ = nullptr;
+    lv_timer_t  *statusTimer_ = nullptr;
+
+    static void onStatusUpdate(lv_timer_t *t);
 };

@@ -49,6 +49,12 @@ void setup() {
             Serial.println(ok ? "\n[WiFi] OK " + WiFi.localIP().toString()
                               : "\n[WiFi] FAILED");
 
+            if (ok) {
+                // CET/CEST (France) — change offset for other timezones
+                configTzTime("CET-1CEST,M3.5.0,M10.5.0/3", "pool.ntp.org", "time.google.com");
+                Serial.println("[NTP] sync started");
+            }
+
             if (appUI && bsp_lvgl_lock(200)) {
                 appUI->setStatus(ok ? "Pret !" : "WiFi indisponible");
                 bsp_lvgl_unlock();

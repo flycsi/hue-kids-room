@@ -65,3 +65,11 @@ void Axp2101_SetAldo3(uint8_t enable) {
 void Axp2101_SetAldo2(uint8_t enable) {
     if (enable) axp2101.enableALDO2(); else axp2101.disableALDO2();
 }
+
+int Axp2101_GetBatteryPercent() {
+    return axp2101.getBatteryPercent();
+}
+
+bool Axp2101_IsCharging() {
+    return axp2101.isCharging();
+}

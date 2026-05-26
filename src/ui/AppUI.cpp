@@ -1,6 +1,8 @@
 #include "AppUI.h"
 #include "HomeScreen.h"
 #include "ColorScreen.h"
+#include <time.h>
+#include "axp2101_bsp.h"
 
 AppUI::AppUI(HueClient *hue) : hue_(hue) {}
 
@@ -13,6 +15,25 @@ void AppUI::init() {
     homeScreen_  = new HomeScreen(this);
     colorScreen_ = new ColorScreen(this);
     lv_screen_load(homeScreen_->screen());
+
+    // Update status bar every 30 s, and once immediately
+    statusTimer_ = lv_timer_create(onStatusUpdate, 30000, this);
+    lv_timer_ready(statusTimer_);
+}
+
+void AppUI::onStatusUpdate(lv_timer_t *t) {
+    auto *self = static_cast<AppUI *>(lv_timer_get_user_data(t));
+    if (!self->homeScreen_) return;
+
+    struct tm timeinfo = {};
+    if (getLocalTime(&timeinfo)) {
+        self->homeScreen_->updateTime(timeinfo.tm_hour, timeinfo.tm_min);
+    }
+
+    self->homeScreen_->updateBattery(
+        Axp2101_GetBatteryPercent(),
+        Axp2101_IsCharging()
+    );
 }
 
 void AppUI::showColorScreen() {

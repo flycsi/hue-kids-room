@@ -17,11 +17,16 @@ public:
     /** Flash a status message (WiFi connecting, etc.) */
     void setStatus(const char *msg);
 
+    void updateTime(int hour, int minute);
+    void updateBattery(int pct, bool charging);
+
 private:
     AppUI     *ui_;
     lv_obj_t  *screen_     = nullptr;
     lv_obj_t  *colorCircle_= nullptr;
     lv_obj_t  *statusLabel_= nullptr;
+    lv_obj_t  *timeLabel_  = nullptr;
+    lv_obj_t  *battLabel_  = nullptr;
     lv_obj_t  *nightBtn_   = nullptr;
     lv_obj_t  *partyBtn_   = nullptr;
     lv_obj_t  *powerBtn_   = nullptr;
