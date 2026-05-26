@@ -28,6 +28,7 @@ void HomeScreen::build() {
     lv_obj_remove_flag(screen_, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_style_bg_color(screen_, CLR_BG, 0);
     lv_obj_set_style_bg_opa(screen_, LV_OPA_COVER, 0);
+    lv_obj_add_event_cb(screen_, onGesture, LV_EVENT_GESTURE, this);
 
     const lv_coord_t W = 480, H = 480;
     // Header occupies y=0..47 ; buttons start at BTN_Y=360
@@ -165,6 +166,13 @@ void HomeScreen::build() {
     lv_obj_set_style_text_font(statusLabel_, &lv_font_montserrat_14, 0);
     lv_obj_set_style_text_color(statusLabel_, lv_color_make(120, 120, 120), 0);
     lv_obj_align(statusLabel_, LV_ALIGN_TOP_MID, 0, H - 24);
+
+    // Allow gestures on clickable children to bubble up to the screen
+    lv_obj_add_flag(colorCircle_, LV_OBJ_FLAG_GESTURE_BUBBLE);
+    lv_obj_add_flag(nightBtn_,    LV_OBJ_FLAG_GESTURE_BUBBLE);
+    lv_obj_add_flag(partyBtn_,    LV_OBJ_FLAG_GESTURE_BUBBLE);
+    lv_obj_add_flag(powerBtn_,    LV_OBJ_FLAG_GESTURE_BUBBLE);
+    lv_obj_add_flag(sleepBtn_,    LV_OBJ_FLAG_GESTURE_BUBBLE);
 }
 
 void HomeScreen::updateColorPreview(HueColor color, AppMode mode) {
@@ -237,4 +245,13 @@ void HomeScreen::onPowerBtn(lv_event_t *e) {
 void HomeScreen::onSleepBtn(lv_event_t *e) {
     auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
     self->ui_->onSleepMode();
+}
+void HomeScreen::onGesture(lv_event_t *e) {
+    lv_indev_t *indev = lv_indev_active();
+    if (!indev) return;
+    lv_dir_t dir = lv_indev_get_gesture_dir(indev);
+    if (dir == LV_DIR_BOTTOM) {
+        auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
+        self->ui_->showPinScreen();
+    }
 }

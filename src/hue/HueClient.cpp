@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+#include <Preferences.h>
 #include "config.h"
 
 // Party mode: 8 vivid colors cycling through the rainbow
@@ -18,7 +19,21 @@ static const HueColor PARTY_COLORS[] = {
 static const int PARTY_STEPS = sizeof(PARTY_COLORS) / sizeof(PARTY_COLORS[0]);
 
 HueClient::HueClient(const char *bridgeIp, const char *username)
-    : bridgeIp_(bridgeIp), username_(username) {}
+    : bridgeIp_(bridgeIp), username_(username) {
+    Preferences prefs;
+    prefs.begin("huekids", true);
+    uint32_t savedMin = prefs.getUInt("sleepMin", SLEEP_DURATION_DEFAULT_MIN);
+    prefs.end();
+    sleepDurationMs_ = savedMin * 60UL * 1000;
+}
+
+void HueClient::setSleepDuration(uint32_t ms) {
+    sleepDurationMs_ = ms;
+    Preferences prefs;
+    prefs.begin("huekids", false);
+    prefs.putUInt("sleepMin", ms / 60000);
+    prefs.end();
+}
 
 HueClient::~HueClient() {}
 
@@ -122,7 +137,7 @@ void HueClient::setSleepMode() {
 uint32_t HueClient::sleepRemainingMs() const {
     if (mode_ != AppMode::Sleep) return 0;
     uint32_t elapsed = millis() - sleepStartMs_;
-    return elapsed >= SLEEP_DURATION_MS ? 0 : SLEEP_DURATION_MS - elapsed;
+    return elapsed >= sleepDurationMs_ ? 0 : sleepDurationMs_ - elapsed;
 }
 
 void HueClient::tick() {
@@ -139,7 +154,7 @@ void HueClient::tick() {
     if (mode_ == AppMode::Sleep) {
         uint32_t elapsed = now - sleepStartMs_;
 
-        if (elapsed >= SLEEP_DURATION_MS) {
+        if (elapsed >= sleepDurationMs_) {
             // Finished: lock at minimum brightness
             color_.bri = SLEEP_END_BRI;
             broadcastColor(color_);
@@ -147,7 +162,7 @@ void HueClient::tick() {
         } else if (now - lastSleepStepMs_ >= 30000) {
             // Dim one step every 30 s
             lastSleepStepMs_ = now;
-            float progress = (float)elapsed / SLEEP_DURATION_MS;
+            float progress = (float)elapsed / sleepDurationMs_;
             uint8_t bri = SLEEP_START_BRI
                         - (uint8_t)(progress * (SLEEP_START_BRI - SLEEP_END_BRI));
             color_.bri = max(bri, SLEEP_END_BRI);

@@ -40,4 +40,5 @@ private:
     static void onPartyBtn(lv_event_t *e);
     static void onPowerBtn(lv_event_t *e);
     static void onSleepBtn(lv_event_t *e);
+    static void onGesture(lv_event_t *e);
 };

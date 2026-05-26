@@ -30,8 +30,12 @@ public:
     /** Start/stop party mode (color cycling) */
     void setPartyMode(bool enable);
 
-    /** Start sleep timer: warm orange → dims to 5% over 15 min */
+    /** Start sleep timer: warm orange → dims to 5% over configured duration */
     void setSleepMode();
+
+    /** Get/set sleep timer duration (stored in NVS) */
+    uint32_t getSleepDurationMs() const { return sleepDurationMs_; }
+    void setSleepDuration(uint32_t ms);
 
     bool isPartyMode()  const { return partyActive_; }
     bool isSleepMode()  const { return mode_ == AppMode::Sleep; }
@@ -58,12 +62,12 @@ private:
     uint32_t lastPartyMs_    = 0;
     uint8_t  partyStep_      = 0;
 
-    uint32_t sleepStartMs_   = 0;
-    uint32_t lastSleepStepMs_= 0;
+    uint32_t sleepStartMs_    = 0;
+    uint32_t lastSleepStepMs_ = 0;
+    uint32_t sleepDurationMs_ = 15UL * 60 * 1000;
 
-    static constexpr uint32_t SLEEP_DURATION_MS = 15UL * 60 * 1000;
-    static constexpr uint8_t  SLEEP_START_BRI   = 200;
-    static constexpr uint8_t  SLEEP_END_BRI     = 13;   // ~5 % of 254
+    static constexpr uint8_t  SLEEP_START_BRI = 200;
+    static constexpr uint8_t  SLEEP_END_BRI   = 13;   // ~5 % of 254
 
     void sendState(int lightId, const char *jsonBody);
     void broadcastColor(const HueColor &c);

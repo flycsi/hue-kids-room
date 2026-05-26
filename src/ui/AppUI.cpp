@@ -1,6 +1,8 @@
 #include "AppUI.h"
 #include "HomeScreen.h"
 #include "ColorScreen.h"
+#include "PinScreen.h"
+#include "AdminScreen.h"
 #include <time.h>
 #include "axp2101_bsp.h"
 
@@ -9,11 +11,15 @@ AppUI::AppUI(HueClient *hue) : hue_(hue) {}
 AppUI::~AppUI() {
     delete homeScreen_;
     delete colorScreen_;
+    delete pinScreen_;
+    delete adminScreen_;
 }
 
 void AppUI::init() {
     homeScreen_  = new HomeScreen(this);
     colorScreen_ = new ColorScreen(this);
+    pinScreen_   = new PinScreen(this);
+    adminScreen_ = new AdminScreen(this);
     lv_screen_load(homeScreen_->screen());
 
     // Update status bar every 30 s, and once immediately
@@ -107,4 +113,14 @@ void AppUI::onSleepMode() {
 
 void AppUI::setStatus(const char *msg) {
     if (homeScreen_) homeScreen_->setStatus(msg);
+}
+
+void AppUI::showPinScreen() {
+    pinScreen_->reset();
+    lv_screen_load_anim(pinScreen_->screen(), LV_SCR_LOAD_ANIM_MOVE_BOTTOM, 250, 0, false);
+}
+
+void AppUI::showAdminScreen() {
+    adminScreen_->refresh();
+    lv_screen_load_anim(adminScreen_->screen(), LV_SCR_LOAD_ANIM_FADE_IN, 200, 0, false);
 }

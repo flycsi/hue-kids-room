@@ -5,6 +5,8 @@
 
 class HomeScreen;
 class ColorScreen;
+class PinScreen;
+class AdminScreen;
 
 class AppUI {
 public:
@@ -15,6 +17,8 @@ public:
 
     void showColorScreen();
     void showHomeScreen();
+    void showPinScreen();
+    void showAdminScreen();
 
     /** Display a status message on the home screen */
     void setStatus(const char *msg);
@@ -34,6 +38,8 @@ private:
     HueClient   *hue_;
     HomeScreen  *homeScreen_  = nullptr;
     ColorScreen *colorScreen_ = nullptr;
+    PinScreen   *pinScreen_   = nullptr;
+    AdminScreen *adminScreen_ = nullptr;
     lv_timer_t  *statusTimer_ = nullptr;
 
     static void onStatusUpdate(lv_timer_t *t);
