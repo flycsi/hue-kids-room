@@ -33,15 +33,15 @@ void HomeScreen::build() {
     const lv_coord_t W = 480, H = 480;
     // Header occupies y=0..47 ; buttons start at BTN_Y=360
     // Circle is centered in the remaining space: top = 47 + (313-200)/2 = 103
-    const lv_coord_t HDR_Y  = 65;   // vertical offset for header items
-    const lv_coord_t CIRC_Y = 127;  // circle top offset from screen top
+    const lv_coord_t HDR_Y  = 12;   // vertical offset for header items
+    const lv_coord_t CIRC_Y = 103;  // circle top offset from screen top
 
     // ── Header: time | title | battery ────────────────────────────────────────
     timeLabel_ = lv_label_create(screen_);
     lv_label_set_text(timeLabel_, "--:--");
     lv_obj_set_style_text_font(timeLabel_, &lv_font_montserrat_24, 0);
     lv_obj_set_style_text_color(timeLabel_, lv_color_white(), 0);
-    lv_obj_align(timeLabel_, LV_ALIGN_TOP_LEFT, 80, HDR_Y);
+    lv_obj_align(timeLabel_, LV_ALIGN_TOP_LEFT, 20, HDR_Y);
 
     titleLabel_ = lv_label_create(screen_);
     lv_label_set_text(titleLabel_, "Ma Chambre");
@@ -53,7 +53,7 @@ void HomeScreen::build() {
     lv_label_set_text(battLabel_, "--%");
     lv_obj_set_style_text_font(battLabel_, &lv_font_montserrat_24, 0);
     lv_obj_set_style_text_color(battLabel_, lv_color_white(), 0);
-    lv_obj_align(battLabel_, LV_ALIGN_TOP_RIGHT, -80, HDR_Y);
+    lv_obj_align(battLabel_, LV_ALIGN_TOP_RIGHT, -20, HDR_Y);
 
     // ── Big color circle (tap → color screen) ─────────────────────────────────
     colorCircle_ = lv_obj_create(screen_);
