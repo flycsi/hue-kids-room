@@ -118,6 +118,55 @@ int HueClient::fetchGroups(HueGroup *out, int maxCount) {
     return count;
 }
 
+int HueClient::fetchScenes(HueScene *out, int maxCount, int groupId) {
+    if (WiFi.status() != WL_CONNECTED || maxCount <= 0 || groupId <= 0) return 0;
+
+    HTTPClient http;
+    http.setTimeout(5000);
+    String url = String("http://") + bridgeIp_ + "/api/" + username_ + "/scenes";
+    http.begin(url);
+    int code = http.GET();
+    if (code != HTTP_CODE_OK) { http.end(); return 0; }
+
+    // Filter: only keep name/group/type — discards large lightstates payload
+    JsonDocument filter;
+    filter["*"]["name"]  = true;
+    filter["*"]["group"] = true;
+    filter["*"]["type"]  = true;
+
+    JsonDocument doc;
+    DeserializationError err = deserializeJson(doc, http.getStream(),
+                                               DeserializationOption::Filter(filter));
+    http.end();
+    if (err != DeserializationError::Ok) return 0;
+
+    char groupIdStr[8];
+    snprintf(groupIdStr, sizeof(groupIdStr), "%d", groupId);
+
+    int count = 0;
+    for (JsonPair kv : doc.as<JsonObject>()) {
+        if (count >= maxCount) break;
+        const char *type  = kv.value()["type"]  | "";
+        const char *group = kv.value()["group"] | "";
+        if (strcmp(type, "GroupScene") != 0) continue;
+        if (strcmp(group, groupIdStr)  != 0) continue;
+        strlcpy(out[count].id,   kv.key().c_str(),         sizeof(out[count].id));
+        strlcpy(out[count].name, kv.value()["name"] | "?", sizeof(out[count].name));
+        count++;
+    }
+    return count;
+}
+
+void HueClient::applyScene(const char *sceneId) {
+    mode_        = AppMode::Normal;
+    partyActive_ = false;
+    JsonDocument doc;
+    doc["scene"] = sceneId;
+    String body;
+    serializeJson(doc, body);
+    sendGroupAction(body.c_str());
+}
+
 // ─── Broadcast helpers ───────────────────────────────────────────────────────
 
 void HueClient::broadcastColor(const HueColor &c) {

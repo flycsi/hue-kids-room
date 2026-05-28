@@ -29,7 +29,7 @@ private:
     lv_obj_t  *timeLabel_  = nullptr;
     lv_obj_t  *battLabel_  = nullptr;
     lv_obj_t  *titleLabel_ = nullptr;
-    lv_obj_t  *nightBtn_   = nullptr;
+    lv_obj_t  *scenesBtn_  = nullptr;
     lv_obj_t  *partyBtn_   = nullptr;
     lv_obj_t  *powerBtn_   = nullptr;
     lv_obj_t  *sleepBtn_   = nullptr;
@@ -38,7 +38,7 @@ private:
     void styleBtn(lv_obj_t *btn, lv_color_t color);
 
     static void onColorCircleTap(lv_event_t *e);
-    static void onNightBtn(lv_event_t *e);
+    static void onScenesBtn(lv_event_t *e);
     static void onPartyBtn(lv_event_t *e);
     static void onPowerBtn(lv_event_t *e);
     static void onSleepBtn(lv_event_t *e);

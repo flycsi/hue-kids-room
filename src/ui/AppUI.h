@@ -10,6 +10,7 @@ class PinScreen;
 class AdminScreen;
 class BrightnessScreen;
 class RoomScreen;
+class ScenesScreen;
 
 struct BrightnessSettings {
     bool    autoMode     = BRIGHTNESS_AUTO_DEFAULT;
@@ -32,6 +33,7 @@ public:
     void showAdminScreen();
     void showBrightnessScreen();
     void showRoomScreen();
+    void showScenesScreen();
 
     /** Display a status message on the home screen */
     void setStatus(const char *msg);
@@ -40,7 +42,6 @@ public:
     void onColorPicked(uint16_t hue, uint8_t sat, uint8_t bri);
 
     // Called by HomeScreen buttons
-    void onNightMode();
     void onPartyMode();
     void onPowerToggle();
     void onSleepMode();
@@ -61,6 +62,7 @@ private:
     AdminScreen      *adminScreen_      = nullptr;
     BrightnessScreen *brightnessScreen_ = nullptr;
     RoomScreen       *roomScreen_       = nullptr;
+    ScenesScreen     *scenesScreen_     = nullptr;
     lv_timer_t       *statusTimer_      = nullptr;
 
     BrightnessSettings brightness_;

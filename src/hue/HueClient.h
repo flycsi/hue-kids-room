@@ -18,6 +18,11 @@ struct HueGroup {
     char name[32];
 };
 
+struct HueScene {
+    char id[16];
+    char name[32];
+};
+
 class HueClient {
 public:
     HueClient(const char *bridgeIp, const char *username);
@@ -54,6 +59,12 @@ public:
 
     /** Fetch all rooms/zones from the bridge (blocking HTTP — call from background task) */
     int fetchGroups(HueGroup *out, int maxCount);
+
+    /** Fetch GroupScene scenes for a given group (blocking HTTP — call from background task) */
+    int fetchScenes(HueScene *out, int maxCount, int groupId);
+
+    /** Activate a scene on the active group */
+    void applyScene(const char *sceneId);
 
     /** Persist the selected room (stored in NVS) */
     void setActiveGroup(int id, const char *name);

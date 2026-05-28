@@ -5,6 +5,7 @@
 #include "AdminScreen.h"
 #include "BrightnessScreen.h"
 #include "RoomScreen.h"
+#include "ScenesScreen.h"
 #include <time.h>
 #include <Preferences.h>
 #include "axp2101_bsp.h"
@@ -19,6 +20,7 @@ AppUI::~AppUI() {
     delete adminScreen_;
     delete brightnessScreen_;
     delete roomScreen_;
+    delete scenesScreen_;
 }
 
 void AppUI::loadBrightness() {
@@ -67,6 +69,7 @@ void AppUI::init() {
     adminScreen_     = new AdminScreen(this);
     brightnessScreen_= new BrightnessScreen(this);
     roomScreen_      = new RoomScreen(this);
+    scenesScreen_    = new ScenesScreen(this);
 
     homeScreen_->setTitle(hue_->getActiveGroupName());
     lv_screen_load(homeScreen_->screen());
@@ -130,12 +133,6 @@ void AppUI::onColorPicked(uint16_t hue, uint8_t sat, uint8_t bri) {
     homeScreen_->updateColorPreview(c, AppMode::Normal);
 }
 
-void AppUI::onNightMode() {
-    hue_->setNightMode();
-    homeScreen_->updateColorPreview(hue_->currentColor(), AppMode::Night);
-    homeScreen_->setStatus("Mode Nuit");
-}
-
 void AppUI::onPartyMode() {
     bool startParty = !hue_->isPartyMode();
     hue_->setPartyMode(startParty);
@@ -187,4 +184,9 @@ void AppUI::showBrightnessScreen() {
 void AppUI::showRoomScreen() {
     roomScreen_->startFetch();
     lv_screen_load_anim(roomScreen_->screen(), LV_SCR_LOAD_ANIM_MOVE_TOP, 250, 0, false);
+}
+
+void AppUI::showScenesScreen() {
+    scenesScreen_->startFetch();
+    lv_screen_load_anim(scenesScreen_->screen(), LV_SCR_LOAD_ANIM_MOVE_LEFT, 250, 0, false);
 }

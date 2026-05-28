@@ -2,7 +2,7 @@
 #include "AppUI.h"
 
 // Palette de couleurs des boutons
-#define CLR_NIGHT   lv_color_hex(0xF5A623)  // amber warm
+#define CLR_SCENES  lv_color_hex(0x00838F)  // teal
 #define CLR_PARTY   lv_color_hex(0xE040FB)  // purple
 #define CLR_POWER   lv_color_hex(0x4CAF50)  // green
 #define CLR_SLEEP   lv_color_hex(0x283593)  // deep indigo
@@ -84,20 +84,20 @@ void HomeScreen::build() {
     const lv_coord_t BTN_Y = H - BTN_H - 30;
     const lv_coord_t GAP   = (W - 4 * BTN_W) / 5;
 
-    // Night button
-    nightBtn_ = lv_button_create(screen_);
-    lv_obj_set_size(nightBtn_, BTN_W, BTN_H);
-    lv_obj_set_pos(nightBtn_, GAP, BTN_Y);
-    styleBtn(nightBtn_, CLR_NIGHT);
-    lv_obj_add_event_cb(nightBtn_, onNightBtn, LV_EVENT_CLICKED, this);
+    // Scenes button
+    scenesBtn_ = lv_button_create(screen_);
+    lv_obj_set_size(scenesBtn_, BTN_W, BTN_H);
+    lv_obj_set_pos(scenesBtn_, GAP, BTN_Y);
+    styleBtn(scenesBtn_, CLR_SCENES);
+    lv_obj_add_event_cb(scenesBtn_, onScenesBtn, LV_EVENT_CLICKED, this);
     {
-        lv_obj_t *lbl = lv_label_create(nightBtn_);
-        lv_label_set_text(lbl, "Nuit");
+        lv_obj_t *lbl = lv_label_create(scenesBtn_);
+        lv_label_set_text(lbl, "Scene");
         lv_obj_set_style_text_font(lbl, &lv_font_montserrat_24, 0);
         lv_obj_set_style_text_color(lbl, lv_color_white(), 0);
         lv_obj_align(lbl, LV_ALIGN_BOTTOM_MID, 0, -8);
-        lv_obj_t *ico = lv_label_create(nightBtn_);
-        lv_label_set_text(ico, LV_SYMBOL_EYE_CLOSE);
+        lv_obj_t *ico = lv_label_create(scenesBtn_);
+        lv_label_set_text(ico, LV_SYMBOL_LIST);
         lv_obj_set_style_text_font(ico, &lv_font_montserrat_24, 0);
         lv_obj_set_style_text_color(ico, lv_color_white(), 0);
         lv_obj_align(ico, LV_ALIGN_TOP_MID, 0, 8);
@@ -169,7 +169,7 @@ void HomeScreen::build() {
 
     // Allow gestures on clickable children to bubble up to the screen
     lv_obj_add_flag(colorCircle_, LV_OBJ_FLAG_GESTURE_BUBBLE);
-    lv_obj_add_flag(nightBtn_,    LV_OBJ_FLAG_GESTURE_BUBBLE);
+    lv_obj_add_flag(scenesBtn_,   LV_OBJ_FLAG_GESTURE_BUBBLE);
     lv_obj_add_flag(partyBtn_,    LV_OBJ_FLAG_GESTURE_BUBBLE);
     lv_obj_add_flag(powerBtn_,    LV_OBJ_FLAG_GESTURE_BUBBLE);
     lv_obj_add_flag(sleepBtn_,    LV_OBJ_FLAG_GESTURE_BUBBLE);
@@ -230,9 +230,9 @@ void HomeScreen::onColorCircleTap(lv_event_t *e) {
     auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
     self->ui_->showColorScreen();
 }
-void HomeScreen::onNightBtn(lv_event_t *e) {
+void HomeScreen::onScenesBtn(lv_event_t *e) {
     auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
-    self->ui_->onNightMode();
+    self->ui_->showScenesScreen();
 }
 void HomeScreen::onPartyBtn(lv_event_t *e) {
     auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
