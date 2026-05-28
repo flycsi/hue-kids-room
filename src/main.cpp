@@ -31,7 +31,7 @@ void setup() {
         appUI = new AppUI(hueClient);
         appUI->init();
         appUI->setStatus("Connexion WiFi...");
-        Lcd_SetBacklight(100);
+        Lcd_SetBacklight(appUI->getTargetBrightness());
         bsp_lvgl_unlock();
     }
 
@@ -77,9 +77,11 @@ void loop() {
         if (idle >= SCREEN_TIMEOUT_MS && !screenOff) {
             Lcd_SetBacklight(0);
             screenOff = true;
+            if (appUI) appUI->setScreenOn(false);
         } else if (idle < SCREEN_TIMEOUT_MS && screenOff) {
-            Lcd_SetBacklight(100);
             screenOff = false;
+            if (appUI) appUI->setScreenOn(true);   // applique la luminosité gérée
+            else Lcd_SetBacklight(100);
         }
     }
 

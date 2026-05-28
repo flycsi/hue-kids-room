@@ -21,5 +21,6 @@ private:
 
     static void onMinus(lv_event_t *e);
     static void onPlus(lv_event_t *e);
+    static void onBrightness(lv_event_t *e);
     static void onBack(lv_event_t *e);
 };

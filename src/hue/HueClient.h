@@ -13,12 +13,17 @@ struct HueColor {
     bool     on  = true;
 };
 
+struct HueGroup {
+    int  id;
+    char name[32];
+};
+
 class HueClient {
 public:
     HueClient(const char *bridgeIp, const char *username);
     ~HueClient();
 
-    /** Apply a color to all configured lights */
+    /** Apply a color to all lights in the active group */
     void applyColor(const HueColor &color);
 
     /** Toggle all lights on/off */
@@ -33,7 +38,7 @@ public:
     /** Start sleep timer: warm orange → dims to 5% over configured duration */
     void setSleepMode();
 
-    /** Get/set sleep timer duration (stored in NVS) */
+    /** Sleep timer duration (stored in NVS) */
     uint32_t getSleepDurationMs() const { return sleepDurationMs_; }
     void setSleepDuration(uint32_t ms);
 
@@ -47,7 +52,15 @@ public:
 
     HueColor currentColor() const { return color_; }
 
-    /** Call from main loop — drives party color cycle */
+    /** Fetch all rooms/zones from the bridge (blocking HTTP — call from background task) */
+    int fetchGroups(HueGroup *out, int maxCount);
+
+    /** Persist the selected room (stored in NVS) */
+    void setActiveGroup(int id, const char *name);
+    int         getActiveGroupId()   const { return activeGroupId_; }
+    const char *getActiveGroupName() const { return activeGroupName_; }
+
+    /** Call from main loop — drives party color cycle and sleep dimming */
     void tick();
 
 private:
@@ -55,21 +68,29 @@ private:
     const char *username_;
 
     HueColor color_;
-    AppMode  mode_       = AppMode::Normal;
-    bool     lightsOn_   = true;
-    bool     partyActive_= false;
+    AppMode  mode_        = AppMode::Normal;
+    bool     lightsOn_    = true;
+    bool     partyActive_ = false;
 
-    uint32_t lastPartyMs_    = 0;
-    uint8_t  partyStep_      = 0;
+    uint32_t lastPartyMs_     = 0;
+    uint8_t  partyStep_       = 0;
 
     uint32_t sleepStartMs_    = 0;
     uint32_t lastSleepStepMs_ = 0;
     uint32_t sleepDurationMs_ = 15UL * 60 * 1000;
 
-    static constexpr uint8_t  SLEEP_START_BRI = 200;
-    static constexpr uint8_t  SLEEP_END_BRI   = 13;   // ~5 % of 254
+    int  activeGroupId_      = 0;
+    char activeGroupName_[32]= "Ma Chambre";
 
+    static constexpr uint8_t SLEEP_START_BRI = 200;
+    static constexpr uint8_t SLEEP_END_BRI   = 13;  // ~5% of 254
+
+    /** Send a JSON body to the active group action endpoint (or individual lights fallback) */
+    void sendGroupAction(const char *jsonBody);
+
+    /** Fallback: send to a single light by ID */
     void sendState(int lightId, const char *jsonBody);
+
     void broadcastColor(const HueColor &c);
     void broadcastCt(uint16_t ct, uint8_t bri);
 };

@@ -10,7 +10,8 @@
       "PowerShell(ls \"C:\\\\Users\\\\flycsi\\\\hue-kids-room\" | Where-Object { -not $_.PSIsContainer } | Select-Object Name)",
       "Bash(pio run *)",
       "PowerShell(Get-Command platformio -ErrorAction SilentlyContinue; Get-Command pio -ErrorAction SilentlyContinue; & \"$env:USERPROFILE\\\\.platformio\\\\penv\\\\Scripts\\\\pio.exe\" --version 2>&1)",
-      "PowerShell(cd \"c:\\\\Users\\\\flycsi\\\\hue-kids-room\" && & \"$env:USERPROFILE\\\\.platformio\\\\penv\\\\Scripts\\\\pio.exe\" run 2>&1 | Select-Object -Last 80)"
+      "PowerShell(cd \"c:\\\\Users\\\\flycsi\\\\hue-kids-room\" && & \"$env:USERPROFILE\\\\.platformio\\\\penv\\\\Scripts\\\\pio.exe\" run 2>&1 | Select-Object -Last 80)",
+      "PowerShell(cd \"c:\\\\Users\\\\flycsi\\\\hue-kids-room\" && & \"$env:USERPROFILE\\\\.platformio\\\\penv\\\\Scripts\\\\pio.exe\" run 2>&1 | Select-Object -Last 30)"
     ]
   }
 }

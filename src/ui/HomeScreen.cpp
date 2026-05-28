@@ -43,11 +43,11 @@ void HomeScreen::build() {
     lv_obj_set_style_text_color(timeLabel_, lv_color_white(), 0);
     lv_obj_align(timeLabel_, LV_ALIGN_TOP_LEFT, 16, HDR_Y);
 
-    lv_obj_t *title = lv_label_create(screen_);
-    lv_label_set_text(title, "Ma Chambre");
-    lv_obj_set_style_text_font(title, &lv_font_montserrat_24, 0);
-    lv_obj_set_style_text_color(title, lv_color_white(), 0);
-    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, HDR_Y);
+    titleLabel_ = lv_label_create(screen_);
+    lv_label_set_text(titleLabel_, "Ma Chambre");
+    lv_obj_set_style_text_font(titleLabel_, &lv_font_montserrat_24, 0);
+    lv_obj_set_style_text_color(titleLabel_, lv_color_white(), 0);
+    lv_obj_align(titleLabel_, LV_ALIGN_TOP_MID, 0, HDR_Y);
 
     battLabel_ = lv_label_create(screen_);
     lv_label_set_text(battLabel_, "--%");
@@ -246,12 +246,18 @@ void HomeScreen::onSleepBtn(lv_event_t *e) {
     auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
     self->ui_->onSleepMode();
 }
+void HomeScreen::setTitle(const char *title) {
+    if (titleLabel_) lv_label_set_text(titleLabel_, title);
+}
+
 void HomeScreen::onGesture(lv_event_t *e) {
     lv_indev_t *indev = lv_indev_active();
     if (!indev) return;
     lv_dir_t dir = lv_indev_get_gesture_dir(indev);
+    auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
     if (dir == LV_DIR_BOTTOM) {
-        auto *self = static_cast<HomeScreen *>(lv_event_get_user_data(e));
         self->ui_->showPinScreen();
+    } else if (dir == LV_DIR_TOP) {
+        self->ui_->showRoomScreen();
     }
 }

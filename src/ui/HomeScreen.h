@@ -19,6 +19,7 @@ public:
 
     void updateTime(int hour, int minute);
     void updateBattery(int pct, bool charging);
+    void setTitle(const char *title);
 
 private:
     AppUI     *ui_;
@@ -27,6 +28,7 @@ private:
     lv_obj_t  *statusLabel_= nullptr;
     lv_obj_t  *timeLabel_  = nullptr;
     lv_obj_t  *battLabel_  = nullptr;
+    lv_obj_t  *titleLabel_ = nullptr;
     lv_obj_t  *nightBtn_   = nullptr;
     lv_obj_t  *partyBtn_   = nullptr;
     lv_obj_t  *powerBtn_   = nullptr;

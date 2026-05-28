@@ -80,10 +80,27 @@ void AdminScreen::build() {
         lv_obj_center(lbl);
     }
 
+    // Brightness settings button
+    lv_obj_t *briBtn = lv_button_create(screen_);
+    lv_obj_set_size(briBtn, 280, 55);
+    lv_obj_align(briBtn, LV_ALIGN_BOTTOM_MID, 0, -90);
+    lv_obj_set_style_bg_color(briBtn, lv_color_hex(0x0D3B5E), LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(briBtn, CLR_BTN_PR, LV_STATE_PRESSED);
+    lv_obj_set_style_radius(briBtn, 16, 0);
+    lv_obj_set_style_shadow_width(briBtn, 0, 0);
+    lv_obj_add_event_cb(briBtn, onBrightness, LV_EVENT_CLICKED, this);
+    {
+        lv_obj_t *lbl = lv_label_create(briBtn);
+        lv_label_set_text(lbl, LV_SYMBOL_IMAGE "  Luminosite " LV_SYMBOL_RIGHT);
+        lv_obj_set_style_text_font(lbl, &lv_font_montserrat_14, 0);
+        lv_obj_set_style_text_color(lbl, lv_color_white(), 0);
+        lv_obj_center(lbl);
+    }
+
     // Back button
     lv_obj_t *backBtn = lv_button_create(screen_);
-    lv_obj_set_size(backBtn, 200, 60);
-    lv_obj_align(backBtn, LV_ALIGN_BOTTOM_MID, 0, -30);
+    lv_obj_set_size(backBtn, 200, 55);
+    lv_obj_align(backBtn, LV_ALIGN_BOTTOM_MID, 0, -20);
     lv_obj_set_style_bg_color(backBtn, CLR_BACK, LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(backBtn, CLR_BACK_PR, LV_STATE_PRESSED);
     lv_obj_set_style_radius(backBtn, 16, 0);
@@ -129,6 +146,11 @@ void AdminScreen::onPlus(lv_event_t *e) {
         self->ui_->hue()->setSleepDuration(mins * 60000UL);
         self->updateDurationLabel();
     }
+}
+
+void AdminScreen::onBrightness(lv_event_t *e) {
+    auto *self = static_cast<AdminScreen *>(lv_event_get_user_data(e));
+    self->ui_->showBrightnessScreen();
 }
 
 void AdminScreen::onBack(lv_event_t *e) {
